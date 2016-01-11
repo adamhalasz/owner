@@ -24,6 +24,8 @@ You won't really encounter with these definitions until you fiddle around with E
 
 All of them can be virtually **anything**. They are plain old Strings. What makes them special is the relationship with your protected data.
 
+![enter image description here](http://i.imgur.com/fcnmE3B.png)
+
 
 ### 
 
