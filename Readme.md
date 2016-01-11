@@ -5,7 +5,7 @@
 A universal permission Library for node.js. Good for protecting user *resources* and *operations*.
 
 ```js
-owner('*')
+owner('johnDoe')
     .in('posts')
     .select('XXX-YYY-ZZZ')
     .can('edit')
