@@ -1,0 +1,19 @@
+{
+  "name": "owner",
+  "version": "0.1.0",
+  "description": "A permission control library for node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "permission",
+    "control",
+    "acl",
+    "auth",
+    "resource",
+    "resources"
+  ],
+  "author": "Adam Halasz",
+  "license": "MIT"
+}
