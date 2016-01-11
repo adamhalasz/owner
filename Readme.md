@@ -1,8 +1,21 @@
 
-![enter image description here](http://i.imgur.com/4RrweAp.png)
+![enter image description here](http://i.imgur.com/cRzgGxI.png)
 
 # **Owner**
 ### A universal permission Library for node.js
+
+```js
+owner('*')
+    .in('posts')
+    .select('XXX-YYY-ZZZ')
+    .can('edit')
+    .success(function(){
+        // ... handle success
+    })
+    .error(function(error, reason){
+        // ... handle failure
+    })
+```
 
 ## **Features**
 - Easy to use API
