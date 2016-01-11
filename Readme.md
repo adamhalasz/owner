@@ -2,7 +2,7 @@
 ![owner.js icon](http://i.imgur.com/WJEYaXz.png)
 
 # **Owner**
-### A universal permission Library for node.js
+A universal permission Library for node.js. Good for protecting user *resources* and *operations*.
 
 ```js
 owner('*')

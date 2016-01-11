@@ -1,7 +1,7 @@
 {
   "name": "owner",
   "version": "0.1.0",
-  "description": "A permission control library for node.js",
+  "description": "A universal permission Library for node.js. Good for protecting user resources and operations.",
   "main": "index.js",
   "scripts": {
     "test": "test"
