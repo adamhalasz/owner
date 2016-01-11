@@ -1,5 +1,5 @@
 
-![enter image description here](http://i.imgur.com/cRzgGxI.png)
+![owner.js icon](http://i.imgur.com/WJEYaXz.png)
 
 # **Owner**
 ### A universal permission Library for node.js
