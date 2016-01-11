@@ -17,6 +17,11 @@ owner('*')
     })
 ```
 
+## **Install**
+```
+npm install owner
+```
+
 ## **Features**
 - Easy to use API
 - Perfect for middleware
