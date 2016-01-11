@@ -29,7 +29,8 @@ All of them can be virtually **anything**. They are plain old Strings. What make
 
 
 ## **Setup**
-```
+
+```js
 var owner = require('owner');
 ```
 
@@ -60,6 +61,7 @@ app.post('/posts/:postId/public', posts.public, grant)
 
 #### On All Resource Methods for a single Owner
 Give access to `all` methods for the `session user` on the requested `post` resource:
+
 ```js
 // Grant Controller
 function grant($){
@@ -79,6 +81,7 @@ app.post('/posts/:postId/create', grant, posts.comment)
 
 #### On Selected Methods for a single Owner
 Give access to `comment` and `edit` methods for the `session user` on the requested `post` resource:
+
 ```js
 // Grant Controller
 function grant($){
@@ -96,8 +99,9 @@ function grant($){
 app.post('/posts/:postId/create', grant, posts.create)
 ```
 
-### **Revoke Method on Resource**
+### **Revoke Permission for a Method on a Resource**
 Revoke grant to `comment` method from the `session user` on the requested `post` resource.
+
 ```js
 // Revoke Controller
 function revoke($){
@@ -115,8 +119,9 @@ function revoke($){
 app.post('/posts/:postId/remove', revoke, posts.remove)
 ```
 
-### **Revoke Resource**
+### **Revoke All Permission to Resource**
 Revoke grant completely from the `session user` to the requested `post` resource:
+
 ```js
 // Revoke Controller
 function revoke($){
@@ -137,6 +142,7 @@ app.post('/posts/:postId/remove', revoke, posts.remove)
 
 ### **Check Resource Permission**
 Check if the session user can comment on the requested post
+
 ```js
 // Check Controller
 function check($){
@@ -208,7 +214,8 @@ Function to run when the operation has failed.
 **Syntax**: string(s) *`methodId`*...
 
 **Examples**:
-```
+
+```js
 owner.someMethod([a,b,c]) // multiple in array
 owner.someMethod(a,b,c)   // multiple
 owner.someMethod(a)       // single
@@ -222,7 +229,8 @@ The default storage stores permissions in a file and caches it into memory.
 To have custom storage you will have to handle the  `grant`, `revoke` and `request` events.   
 
 ### Event: **grant**
-```
+
+```js
 owner.on('grant', function(owner, class, resource, method, successCallback, errorCallback){
     // ... save to mongodb ...
     successCallback()
@@ -231,7 +239,8 @@ owner.on('grant', function(owner, class, resource, method, successCallback, erro
 ```
 
 ### Event: **revoke**
-```
+
+```js
 owner.on('revoke', function(owner, class, resource, method, successCallback, errorCallback){
 	// ... remove permission from mongodb
 	succesCallback()
@@ -239,7 +248,8 @@ owner.on('revoke', function(owner, class, resource, method, successCallback, err
 ```
 
 ### Event: **request**
-```
+
+```js
 owner.on('request', function(owner, class, resource, method, successCallback, errorCallback){
 	// ... check permissions in mongodb
 	successCallback()
