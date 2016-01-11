@@ -157,7 +157,7 @@ app.post('/posts/:postId/remove', revoke, posts.remove)
 
 
 ### **Check Resource Permission**
-Check if the session user can comment on the requested post
+Check if the `session user` has access to the requested `post` resource:
 
 ```js
 // Check Controller
@@ -174,15 +174,15 @@ function check($){
 }
 
 // Route
-app.post('/posts/:postId/comment', check, posts.comment)
+app.post('/posts/:postId', check, posts.view)
 ```
 
 
 ### **Check Method Permission on a Resource**
-
+Check if the session user can comment on the requested post:
 ```js
-// check if the session user can comment on the requested post
-app.post('/posts/:postId/comment', function($){
+// Check Controller
+function check(){
     owner($.user.id)
     .in('posts')
     .select($.params.postId)
@@ -191,7 +191,70 @@ app.post('/posts/:postId/comment', function($){
     .error(function(error, reason){
         $.notFound()
     })
-})
+}
+
+// Route
+app.post('/posts/:postId/comment', check, posts.comment)
+```
+
+### **List Resource Methods**
+check if the session user can comment on the requested post
+```js
+// Method Controller
+function methods($){
+    owner($.user.id)
+    .in('posts')
+    .select($.params.postId)
+    .list('methods')
+    .success($.return)
+    .error(function(error, reason){
+        $.notFound()
+    })
+}
+
+// Route
+app.post('/posts/:postId', methods, posts.view)
+```
+
+### **List Owner Resources in a Class**
+List all post `resources` owned by the `session user`:
+```js
+// Resource Controller
+function resources($){
+    owner($.userId)
+    .in('posts')
+    .list('resources')
+    .success(function(data){
+	    $.data.resources = data.resources;
+		$.return()
+	})
+    .error(function(error, reason){
+        $.notFound()
+    })
+}
+
+// Route
+app.post('/user/:userId', resources, posts.view)
+```
+
+### **List Owner Classes**
+List all post `resources` owned by the `session user`:
+```js
+// Class Controller
+function classes($){
+    owner($.userId)
+    .list('classes')
+    .success(function(data){
+	    $.data.resources = data.classes;
+		$.return()
+	})
+    .error(function(error, reason){
+        $.notFound()
+    })
+}
+
+// Route
+app.post('/user/:userId', classes, posts.view)
 ```
 
 ## **API**
@@ -217,18 +280,16 @@ Give an Owner permission to a Method with the specified `methodId` for the previ
 ### **.revoke(** string(s)***`methodId`*...)**
 Give an Owner permission to a Method with the specified `methodId` for the previously selected resource.
 
-### **.success(** function ***`callback()`*)**
-Function to run when the operation was successful.
+### **.list(** string ***`type`*)**
+Get a list of `classes`, `resources`,  and `methods` or `all` them.
+
+### **.success(** function ***`callback(data)`*)**
+Function to run when the operation was successful. The **data** attribute in callback is only available when the `.list()` method is used.
 
 ### **.error(** function ***`callback(error, reason)`*)**
 Function to run when the operation has failed.
 
-### **Explanation**
-
-#### **List of Methods**
-
-**Syntax**: string(s) *`methodId`*...
-
+### **Method Arguments**
 **Examples**:
 
 ```js
