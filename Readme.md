@@ -47,14 +47,10 @@ All of them can be virtually **anything**. They are plain old Strings. What make
 
 ### 
 
-
-## **Setup**
-
+## **Usage**
 ```js
 var owner = require('owner');
 ```
-
-## **Usage**
 
 ### **Grant Permission**
 
