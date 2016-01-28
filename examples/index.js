@@ -1,11 +1,11 @@
 
 // todos
-- groups
+/*- groups
 - revoke
 - easier driver loading
 - mongo driver
 - redis driver
-- rethinkdb driver
+- rethinkdb driver*/
 
 
 // ============================================================
@@ -44,40 +44,78 @@ var async = require('async')
 function ready(){
     async.series([
         function(done){
+           
             // grant `read` access for `id` `name` `title` attributes to anyone on every model
-            new owner().group('all').in('all').grant('read').attributes('id', 'name', 'title').success(done).run()
+            new owner()
+                .group('all')
+                .in('all')
+                .grant('read')
+                .attributes('id', 'name', 'title')
+                .success(done)
+                .run()
+        
+        
         },
         function(done){
-            new owner().group('admin').in('teams').grant('all').attributes('all').success(done).run()
+           
+            new owner()
+                .group('admin')
+                .in('teams')
+                .grant('all')
+                .attributes('all')
+                .success(done)
+                .run()
+        
         },
         function(done){
-            new owner().group('moderator').in('teams').grant('create', 'read', 'update').attributes('all').success(done).run()
+        
+            new owner()
+                .group('moderator')
+                .in('teams')
+                .grant('create', 'read', 'update')
+                .attributes('all')
+                .success(done)
+                .run()
+        
         },
         function(done){
-            new owner().group('member').in('teams').grant('read').attributes('id', 'name', 'members').success(done).run()
+        
+            new owner()
+                .group('member')
+                .in('teams')
+                .grant('read')
+                .attributes('id', 'name', 'members')
+                .success(done)
+                .run()
+        
         },
         function(done){
-            new owner().group('member').in('teams').grant('invite').attributes('id', 'name', 'members').success(done).run()
+        
+            new owner()
+                .group('member')
+                .in('teams')
+                .grant('invite')
+                .attributes('id', 'name', 'members')
+                .success(done)
+                .run()
+        
         },
         function(done){
-            new owner().group('guest').in('teams').grant('read').attributes('id', 'name', 'members').success(done).run()
+        
+            new owner()
+                .group('guest')
+                .in('teams')
+                .grant('read')
+                .attributes('id', 'name', 'members')
+                .success(done)
+                .run()
+        
         },
     ], function(){
         console.log('finished');
     })
 }
 
-/*
-new owner($.user.id)
-    .in('teams')
-    .can('update')
-    .attributes('title')
-    .success(function(){
-    
-    }).deny(function(){
-        
-    })
-*/
 
 // ============================================================
 //  Routes
@@ -145,6 +183,7 @@ app.get('/revoke/:method/:model/:resource?/:attributes?', function($){
 })
 
 // CHECK PERMISSION
+//check/get/posts/1/title,id
 app.get('/check/:method/:model/:resource?/:attributes?', function($){
     new owner(100)
         .in($.params.model)
