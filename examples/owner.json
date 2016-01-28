@@ -1,0 +1,151 @@
+{
+    "all": {
+        "100": {
+            "posts": {
+                "1": {
+                    "all": {
+                        "read": false
+                    },
+                    "title": {
+                        "read": false
+                    },
+                    "id": {
+                        "read": true
+                    }
+                },
+                "2": {
+                    "all": {
+                        "read": true
+                    }
+                }
+            },
+            "team": {
+                "1": {
+                    "all": {
+                        "read": true
+                    }
+                }
+            },
+            "teams": {
+                "1": {
+                    "all": {
+                        "read": true
+                    }
+                },
+                "2": {
+                    "all": {
+                        "read": true
+                    }
+                }
+            },
+            "abc": {
+                "1": {
+                    "all": {
+                        "read": true,
+                        "write": true,
+                        "asdfdas": true,
+                        "aba": true
+                    },
+                    "id": {
+                        "aba": true
+                    },
+                    "tags": {
+                        "aba": true
+                    }
+                }
+            },
+            "users": {
+                "1": {
+                    "tags": {
+                        "aba": true
+                    }
+                }
+            }
+        },
+        "101": {
+            "posts": {
+                "1": {
+                    "all": {
+                        "read": false
+                    }
+                }
+            }
+        },
+        "all": {
+            "all": {
+                "id": {
+                    "read": true
+                },
+                "name": {
+                    "read": true
+                },
+                "title": {
+                    "read": true
+                },
+                "all": {
+                    "read": false
+                }
+            }
+        }
+    },
+    "admin": {
+        "teams": {
+            "all": {
+                "all": {
+                    "all": true
+                }
+            }
+        }
+    },
+    "moderator": {
+        "teams": {
+            "all": {
+                "all": {
+                    "create": true,
+                    "read": true,
+                    "update": true
+                }
+            }
+        }
+    },
+    "member": {
+        "teams": {
+            "all": {
+                "id": {
+                    "invite": true,
+                    "read": true
+                },
+                "name": {
+                    "invite": true,
+                    "read": true
+                },
+                "members": {
+                    "invite": true,
+                    "read": true
+                },
+                "all": {
+                    "read": false,
+                    "invite": false
+                }
+            }
+        }
+    },
+    "guest": {
+        "teams": {
+            "all": {
+                "id": {
+                    "read": true
+                },
+                "name": {
+                    "read": true
+                },
+                "members": {
+                    "read": true
+                },
+                "all": {
+                    "read": false
+                }
+            }
+        }
+    }
+}

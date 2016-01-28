@@ -2,7 +2,7 @@
 ![owner.js icon](http://i.imgur.com/WJEYaXz.png)
 
 # **Owner**
-A universal permission Library for node.js. Good for protecting user *resources* and *operations*.
+An Access Control List module for node.js. Good for protecting user *resources* and *operations*.
 
 ```js
 owner('johnDoe')
@@ -12,8 +12,11 @@ owner('johnDoe')
     .success(function(){
         // ... handle success
     })
-    .error(function(error, reason){
-        // ... handle failure
+    .deny(function(reason){
+        // ... handle permission denied
+    })
+    .error(function(error){
+        // ... handle error
     })
 ```
 
@@ -26,17 +29,17 @@ npm install owner
 - Easy to use API
 - Perfect for middleware
 - Grant, Revoke, and Check Permissions
-- Query Owner Resources, Resource Methods, Classes
-- Support for file system and memory storage mechanism by default
-- Support for custom storage mechanisms (mongodb/mysql etc.)
-- Owner/Class/Resource/Method Identifiers are simple Strings
+- Query Owner Resources, Resource Methods, Models
+- Supports file system storage by default
+- Support for custom storage mechanisms (mongodb/mysql/rethinkdb etc.)
+- Owner/Model/Resource/Method Identifiers are simple Strings
 
 
 ## **Intro**
 You won't really encounter with these definitions until you fiddle around with Events and Custom Storage, but it's good to know anyway:
 
 - `Resource`:  A Protected Resource Identifier (ex: a specific Post in a blog)
-- `Class`: An identifier for a Class of Resources (ex: Posts in a blog)
+- `Model`: An identifier for a Model of Resources (ex: Posts in a blog)
 - `Owner`: The Resource Owner (ex: The Logged-In User)
 - `Method`: A Resource's Method Identifier (ex: `comment`, `edit`, `delete`)
 
@@ -49,7 +52,9 @@ All of them can be virtually **anything**. They are plain old Strings. What make
 
 ## **Usage**
 ```js
-var owner = require('owner');
+var Owner = require('owner');
+var owner = new Owner();
+owner.storage('file', '/path/to/file.json')
 ```
 
 ### **Grant Permission**
@@ -216,7 +221,7 @@ function methods($){
 app.post('/posts/:postId', methods, posts.view)
 ```
 
-### **List Owner Resources in a Class**
+### **List Owner Resources in a Model**
 List all post `resources` owned by the `session user`:
 ```js
 // Resource Controller
@@ -237,15 +242,15 @@ function resources($){
 app.post('/user/:userId', resources, posts.view)
 ```
 
-### **List Owner Classes**
+### **List Owner Models**
 List all post `resources` owned by the `session user`:
 ```js
-// Class Controller
-function classes($){
+// Model Controller
+function models($){
     owner($.userId)
-    .list('classes')
+    .list('models')
     .success(function(data){
-	    $.data.resources = data.classes;
+	    $.data.resources = data.models;
 		$.return()
 	})
     .error(function(error, reason){
@@ -254,7 +259,7 @@ function classes($){
 }
 
 // Route
-app.post('/user/:userId', classes, posts.view)
+app.post('/user/:userId', models, posts.view)
 ```
 
 ## **API**
@@ -262,8 +267,8 @@ app.post('/user/:userId', classes, posts.view)
 ### **owner(** string ***`ownerId`*)**
 Select an Owner with the specified ownerId (*string*)
 
-### **.in(** string ***`classId`*)**
-Filter Resources within a Class.
+### **.in(** string ***`modelId`*)**
+Filter Resources within a Model.
 
 ### **.select(** string ***`resourceId`*)**
 Select a Resource with the specified resourceId.
@@ -281,7 +286,7 @@ Give an Owner permission to a Method with the specified `methodId` for the previ
 Give an Owner permission to a Method with the specified `methodId` for the previously selected resource.
 
 ### **.list(** string ***`type`*)**
-Get a list of `classes`, `resources`,  and `methods` or `all` them.
+Get a list of `models`, `resources`,  and `methods` or `all` them.
 
 ### **.success(** function ***`callback(data)`*)**
 Function to run when the operation was successful. The **data** attribute in callback is only available when the `.list()` method is used.
@@ -305,10 +310,11 @@ The default storage stores permissions in a file and caches it into memory.
 ## **Storage API**
 To have custom storage you will have to handle the  `grant`, `revoke` and `request` events.   
 
+
 ### Event: **grant**
 
 ```js
-owner.on('grant', function(owner, class, resource, method, successCallback, errorCallback){
+owner.on('grant', function(event){
     // ... save to mongodb ...
     successCallback()
 })
@@ -318,7 +324,7 @@ owner.on('grant', function(owner, class, resource, method, successCallback, erro
 ### Event: **revoke**
 
 ```js
-owner.on('revoke', function(owner, class, resource, method, successCallback, errorCallback){
+owner.on('revoke', function(event){
 	// ... remove permission from mongodb
 	succesCallback()
 })
@@ -327,9 +333,18 @@ owner.on('revoke', function(owner, class, resource, method, successCallback, err
 ### Event: **request**
 
 ```js
-owner.on('request', function(owner, class, resource, method, successCallback, errorCallback){
+owner.on('request', function(event){
 	// ... check permissions in mongodb
 	successCallback()
 })
 ```
+
+Event Object
+owner
+- model
+- resource
+- method
+- success
+- deny
+- error
 

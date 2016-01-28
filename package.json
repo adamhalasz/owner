@@ -15,5 +15,9 @@
     "resources"
   ],
   "author": "Adam Halasz",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.5.2",
+    "eventemitter2": "^0.4.14"
+  }
 }

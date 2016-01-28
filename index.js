@@ -2,159 +2,121 @@
 //  Dependencies
 // ======================================================
 
-    var asnyc = require('async')
-    
+    var async = require('async')
+    var util = require('util')
+    var EventEmitter2 = require('eventemitter2').EventEmitter2;
 
 // ======================================================
-//  Owner Object
+//  Config: Owner Object
 // ======================================================
     
-    function Owner(owernId){
-        this.ownerId = ownerId;
+    function OwnerConstructor(){
+        return Owner;
+    }
+    
+    function Owner(ownerId){
+        this.event = {};
+        this.event.owner = ownerId ? ownerId.toString().toLowerCase().trim() : null ;
         return this;
     }
     
-
+    var emitter = new EventEmitter2();
+        Owner.on = emitter.on;
+        Owner.emit = emitter.emit; 
+    
 // ======================================================
-//  Selectors
+//  Config: Selectors
 // ======================================================
     
-    Owner.prototype.in = function(classId){
-        var that = this;
-        this.classId = classId;
+    Owner.prototype.group = function Group(group){
+        this.event.group = group ? group.toString().toLowerCase().trim() : null ;
         return this;
     }
     
-    Owner.prototype.select = function(resourceId){
-        var that = this;
-        this.resourceId = resourceId;
+    Owner.prototype.in = function In(model){
+        this.event.model = model ? model.toString().toLowerCase().trim() : null ;
+        return this;
+    }
+
+    Owner.prototype.select = function Select(resource){
+        this.event.resource = resource ? resource.toString().toLowerCase().trim() : null ;
+        return this;
+    } 
+    
+    Owner.prototype.attributes = function Attributes(){
+        this.event.attributes = parseArguments(arguments);
         return this;
     }    
     
 
 // ======================================================
-//  Public Operations
+//  Config: Public Operations
 // ======================================================
+    /*
+    Owner.prototype.has = function Has(resourceId){
+        this.methods = parseArguments(arguments)
+        this.operation = 'has';
+        return this;
+    }*/
     
-    Owner.prototype.has = function(resourceId){
-        this.has = resourceId;
+    Owner.prototype.list = function List(){
+        this.event.list = parseArguments(arguments)
+        this.operation = 'list';
         return this;
     }
     
-    Owner.prototype.can = function(){
-        this.can = arguments;
+    Owner.prototype.can = function Can(){
+        this.event.methods = parseArguments(arguments)
+        this.operation = 'can';
         return this;
     }
     
-    Owner.prototype.grant = function(){
-        this.grant = arguments;
+    Owner.prototype.grant = function Grant(){
+        this.event.methods = parseArguments(arguments)
+        this.operation = 'grant';
         return this;
     }
     
-    Owner.prototype.revoke = function(){
-        this.revoke = arguments;
+    Owner.prototype.revoke = function Revoke(){
+        this.event.methods = parseArguments(arguments)
+        this.operation = 'revoke';
         return this;
     }
     
-    Owner.prototype.run = function(){
-        if(this.has) this.operations.has()
-        if(this.can) this.operations.can()
-        if(this.grant) this.operations.grant()
-        if(this.revoke) this.operations.revoke()
+    Owner.prototype.run = function Run(){
+        if(!this.event.group) this.event.group = 'all';
+        if(!this.event.model) this.event.model = 'all'
+        if(!this.event.resource) this.event.resource = 'all'
+        if(!this.event.attributes || !this.event.attributes.length) this.event.attributes = ['all'] ;
+        console.log('this.event', this.event)
+        Owner.emit(this.operation, this.event, this.success, this.deny, this.error)
+        return this;
     }
  
  // ======================================================
- //  Callbacks
+ //  Config: Callbacks
  // ======================================================   
-    Owner.prototype.success = function(callback){
+    Owner.prototype.success = function Success(callback){
         this.success = callback;
         return this;
     }
     
-    Owner.prototype.error = function(callback){
-        this.error = callback;
-        this.run()
+    Owner.prototype.deny = function Error(callback){
+        this.deny = callback;
         return this;
     }
 
-// ======================================================
-//  Private Operations
-// ======================================================
-    Owner.prototype.operations = {};
-    Owner.prototype.operations.has = function(){
-        var that = this;
-        var options = getOptions(arguments)
-        var methods = options.methods;
-        var callback = options.callback;
-        var passed = true;
-        var reasons = [];
-        
-        async.each(methods, function(method, next){
-            
-            // all
-            if(method == '*'){
-                that.hasAllMethods(method, handler)
-            
-            // specific
-            } else {
-                that.hasSpecificMethod(method, handler)
-            }
-            
-            function handler(error, failed, reason){
-                if(error) {
-                    throw error;
-                } else {
-                    if(failed){
-                        reasons.push(reason)
-                        passed = false;
-                    }
-                    next()
-                }
-            }
-            
-        }, finish)
-        
-        function finish(){
-            if(passed){
-                that.success()
-            } else {
-                that.error()
-            }
-        }
-    }
-    
-    Owner.prototype.hasAllMethods = function(){
-        
-    }
-    
-    Owner.prototype.hasSpecificMethod = function(method, callback){
-        var that = this;
-        that.storage.request({
-            owner: that.ownerId,
-            class: that.classId,
-            resource: that.resourceId
-        }, function(error, document){
-            if(error) callback(error)
-            
-            if(document){
-                callback(null, false, null)
-            
-            } else if (!document.methods.has(method)) {
-                callback(null, true, null)
-                
-            } else {
-                
-            }
-             
-        })
+    Owner.prototype.error = function Error(callback){
+        this.error = callback;
+        return this.run()
     }
 
 // ======================================================
-//  Storage
+//  Driver
 // ======================================================
-    
-    Owner.prototype.storage = function(name, callback){
-        
+    var drivers = {}
+    function Driver(name, callback){
+        drivers[name] = callback;
     }
 
 // ======================================================
@@ -166,16 +128,20 @@
         - [a,b,c]
         - a,b,c
     */
-    function getOptions(args){
+    function parseArguments(Args){
+        var args = [];
+        for(var i = 0; i < Args.length; i++) {
+            if(typeof Args[i] == 'string') {
+                Args[i].split(',').forEach(function(arg){
+                    args.push(arg.trim())
+                });
+            }
+        }
+        return args;
+        /*
         if(args.length == 1){
             // string
-            if(typeof args == 'string'){
-                
-                return [args[0]]
-                
-            // array
-            } else if (typeof args == 'object') {
-            
+            if(typeof args == 'object'){
                 return args;
                 
             // invalid type
@@ -184,13 +150,14 @@
             }
         } else {
             return args;
-        }
+        }*/
     }
 
 
 // ======================================================
 //  Exports
 // ======================================================
-
-    module.exports = Owner;
+    
+    module.exports = OwnerConstructor;
+    module.exports.driver = Driver;
     

@@ -1,0 +1,87 @@
+// ======================================================
+//  Private Operations
+// ======================================================
+    /*
+    var Operation = new Object();
+    
+    Operation.revoke = function RevokeOperation(self){
+        emitter.emit('revoke', self)
+        return self;
+    }
+    
+    Operation.grant = function GrantOperation(self){
+        emitter.emit('grant', self)
+        return self;
+    }
+    
+    Operation.can = function CanOperation(self){
+        var operation = self.operation.arguments;
+        emitter.emit('can', self)
+        return self;
+    }
+    
+    Operation.has = function HasOperation(self){
+        var options = getOptions(self.operation.arguments)
+        var methods = options.methods;
+        var callback = options.callback;
+        var passed = true;
+        var reasons = [];
+        
+        async.each(methods, function eachMethod(method, next){
+            
+            // all
+            if(method == '*'){
+                self.hasAllMethods(method, handler)
+            
+            // specific
+            } else {
+                self.hasSpecificMethod(method, handler)
+            }
+            
+            function handler(error, failed, reason){
+                if(error) {
+                    self.catch(error)
+                } else {
+                    if(failed){
+                        reasons.push(reason)
+                        passed = false;
+                    }
+                    next()
+                }
+            }
+            
+        }, finish)
+        
+        function finish(){
+            if(passed){
+                self.success()
+            } else {
+                self.deny(reasons)
+            }
+        }
+    }
+    
+    function hasAllMethods(self){
+        
+    }
+    
+    function hasSpecificMethod(self, method, callback){
+        self.request({
+            owner: self.ownerId,
+            model: self.modelId,
+            resource: self.resourceId
+        }, function(error, document){
+            if(error) callback(error)
+            
+            if(document){
+                callback(null, false, null)
+            
+            } else if (!document.methods.has(method)) {
+                callback(null, true, null)
+                
+            } else {
+                
+            }
+        })
+    }
+    */
